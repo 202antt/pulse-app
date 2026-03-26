@@ -13,7 +13,7 @@ export default function LoadingScreen() {
         <div className={`fixed top-0 left-0 bottom-0 right-0 bg-white z-50 flex items-center justify-center transition-opacity duration-300 pointer-events-none ${loadingScreenOpen ? "opacity-100 z-50" : "opacity-0 -z-50"}`}>
             < div className="flex flex-col items-center" >
                 <Image
-                    src={'/assets/Pulse.png'}
+                    src={'/assets/pulse.png'}
                     width={120}
                     height={120}
                     alt="Pulse Logo"
