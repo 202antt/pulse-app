@@ -145,7 +145,7 @@ export function PostHeader({
                 width={44}
                 height={44}
                 alt="Profile Picture"
-                className="w-11 h-11 z-10 bg-white"
+                className="w-11 h-11 bg-white"
             />
 
             <div className="text-[15px] flex flex-col space-y-1.5">
