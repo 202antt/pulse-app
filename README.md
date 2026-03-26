@@ -1,36 +1,264 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+Pulse Social Media App
 
-## Getting Started
+This is a full-stack social media app I built using Next.js, Firebase, and Redux. 
+This project started as a learning experience but turned into something real where I had to debug a LOT of issues and figure things out the hard way.
 
-First, run the development server:
+-----------------------------
+PROJECT OVERVIEW
+-----------------------------
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+Pulse allows users to:
+- Create posts
+- Like posts
+- Comment on posts using a modal
+- View posts in real-time
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Everything updates using Firebase Firestore, so changes happen instantly.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+-----------------------------
+TECH STACK
+-----------------------------
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+Frontend:
+- Next.js (App Router)
+- React
+- Tailwind CSS
 
-## Learn More
+State Management:
+- Redux Toolkit
 
-To learn more about Next.js, take a look at the following resources:
+Backend:
+- Firebase (Firestore + Authentication)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Deployment:
+- Vercel
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+-----------------------------
+MY PROGRESS JOURNEY
+-----------------------------
 
-## Deploy on Vercel
+This project was not smooth at all. Here’s what I worked through:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- Learned how to structure a Next.js app using the App Router
+- Built reusable components like Post, PostHeader, CommentModal
+- Connected Firebase and learned how to read/write data
+- Implemented real-time updates using onSnapshot
+- Learned Redux for managing modals and global state
+- Created a working comment system tied to posts
+- Added likes functionality with arrayUnion / arrayRemove
+- Built dynamic routes for individual post pages
+- Deployed the app to Vercel
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+-----------------------------
+BIGGEST ERRORS & WHAT I LEARNED
+-----------------------------
+
+1. Firebase Permissions Error
+Error:
+"Missing or insufficient permissions"
+
+Cause:
+Firestore rules were not allowing writes
+
+Fix:
+Updated rules to:
+allow write: if request.auth != null;
+
+Lesson:
+Security rules control EVERYTHING in Firebase
+
+-----------------------------
+
+2. Redux State Issues
+Problem:
+Modal wouldn’t open or data wouldn’t pass correctly
+
+Cause:
+Wrong payload mapping in modalSlice:
+I accidentally set everything to action.payload.name
+
+Fix:
+Corrected it to:
+state.commentPostDetails.username = action.payload.username
+state.commentPostDetails.id = action.payload.id
+state.commentPostDetails.text = action.payload.text
+
+Lesson:
+One wrong property can break your whole app
+
+-----------------------------
+
+3. Comment Modal Showing "Guest" Instead of Real Data
+Problem:
+Every reply showed "Guest"
+
+Cause:
+Hardcoded values instead of using Redux state
+
+Fix:
+Used:
+const commentDetails = useSelector(...)
+
+Lesson:
+Always check if you're using dynamic vs static data
+
+-----------------------------
+
+4. Dispatch Errors
+Error:
+dispatch not defined or not working
+
+Cause:
+Forgot to initialize dispatch
+
+Fix:
+const dispatch: AppDispatch = useDispatch()
+
+Lesson:
+Redux requires proper typing in TypeScript
+
+-----------------------------
+
+5. Multiple Posts Rendering Incorrectly
+Problem:
+Mock post showing multiple times
+
+Cause:
+Component logic + mapping issue
+
+Fix:
+Separated mock data from real database data
+
+Lesson:
+Be careful when mixing static and dynamic content
+
+-----------------------------
+
+6. Next.js Dynamic Route Error
+Error:
+Cannot read properties of undefined (reading 'indexOf')
+
+Cause:
+params was typed incorrectly as Promise
+
+Fix:
+Changed to:
+params: { id: string }
+
+Lesson:
+Next.js expects params directly, not wrapped in Promise
+
+-----------------------------
+
+7. Unterminated RegExp Literal Error
+Cause:
+Missing JSX closing brackets
+
+Lesson:
+Sometimes errors look scary but are just syntax mistakes
+
+-----------------------------
+
+8. Firebase Comment System Not Updating
+Problem:
+Comments not saving correctly
+
+Cause:
+Missing imports:
+doc, arrayUnion
+
+Fix:
+import { doc, arrayUnion } from 'firebase/firestore'
+
+Lesson:
+Firebase functions must be explicitly imported
+
+-----------------------------
+
+9. Vercel Image Not Rendering (BIG ONE)
+Problem:
+Images worked locally but not on Vercel
+
+Cause:
+File name casing mismatch:
+Pulse.png vs pulse.png
+
+Fix:
+Renamed file properly and ensured it exists in:
+/public/assets
+
+Lesson:
+Vercel is case-sensitive, local machines are not
+
+-----------------------------
+
+10. Git Not Tracking File Rename
+Problem:
+Renaming image didn’t update on GitHub
+
+Cause:
+Git ignores case-only changes
+
+Fix:
+Renamed to a different name temporarily (pulse-new.png), pushed, then fixed
+
+Lesson:
+Git can be tricky with filenames
+
+-----------------------------
+
+11. UI Layout Issues
+Problem:
+Content appearing in wrong divs
+
+Fix:
+Reorganized JSX structure and spacing
+
+Lesson:
+UI bugs are usually structure issues, not logic
+
+-----------------------------
+
+-----------------------------
+DEPLOYMENT
+-----------------------------
+
+The app is deployed on Vercel.
+
+Steps:
+1. Push to GitHub
+2. Connect repo to Vercel
+3. Add environment variables
+4. Deploy
+
+-----------------------------
+ENVIRONMENT VARIABLES
+-----------------------------
+
+Create a .env.local file:
+
+NEXT_PUBLIC_FIREBASE_API_KEY=your_key
+NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your_domain
+NEXT_PUBLIC_FIREBASE_PROJECT_ID=your_project_id
+NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=your_bucket
+NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
+NEXT_PUBLIC_FIREBASE_APP_ID=your_app_id
+
+-----------------------------
+FUTURE IMPROVEMENTS
+-----------------------------
+
+- User profile pages
+- Image uploads
+- Notifications system
+- Better UI polish
+- Dark mode
+
+-----------------------------
+AUTHOR
+-----------------------------
+
+Anthony Williams Jr.
+
+This project taught me that debugging is a huge part of development.
+Almost everything that broke forced me to actually understand what I was doing.
